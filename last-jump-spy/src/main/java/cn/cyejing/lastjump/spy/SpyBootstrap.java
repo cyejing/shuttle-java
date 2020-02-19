@@ -51,6 +51,9 @@ public class SpyBootstrap {
             if (arg.startsWith("--port")) {
                 config.port = Integer.parseInt(arg.substring("--port".length() + 1));
             }
+            if (arg.startsWith("--auth")) {
+                config.auth = arg.substring("--auth".length() + 1);
+            }
             if (arg.startsWith("--remoteHost")) {
                 config.remoteHost = arg.substring("--remoteHost".length() + 1);
             }
@@ -68,6 +71,7 @@ public class SpyBootstrap {
 
     public static class BootArgs {
         public int port = 14843;
+        public String auth;
         public String remoteHost;
         public int remotePort = 14845;
         public String cryptoName="aes-128-cfb";

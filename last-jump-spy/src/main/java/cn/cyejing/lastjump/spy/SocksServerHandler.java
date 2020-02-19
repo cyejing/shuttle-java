@@ -1,6 +1,7 @@
 package cn.cyejing.lastjump.spy;
 
 import cn.cyejing.lastjump.intel.proto.SocksServerUtils;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -15,7 +16,9 @@ import io.netty.handler.codec.socksx.v5.Socks5CommandRequestDecoder;
 import io.netty.handler.codec.socksx.v5.Socks5CommandType;
 import io.netty.handler.codec.socksx.v5.Socks5InitialRequest;
 import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthRequest;
+import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthRequestDecoder;
 import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthStatus;
+import io.netty.util.internal.StringUtil;
 
 @ChannelHandler.Sharable
 public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksMessage> {
@@ -39,14 +42,22 @@ public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksM
                 break;
             case SOCKS5:
                 if (socksRequest instanceof Socks5InitialRequest) {
-                    // auth support example
-                    //ctx.pipeline().addFirst(new Socks5PasswordAuthRequestDecoder());
-                    //ctx.write(new DefaultSocks5AuthMethodResponse(Socks5AuthMethod.PASSWORD));
-                    ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
-                    ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
+                    if (StringUtil.isNullOrEmpty(SpyBootstrap.config.auth)) {
+                        ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
+                        ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
+                    } else {
+                        ctx.pipeline().addFirst(new Socks5PasswordAuthRequestDecoder());
+                        ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.PASSWORD));
+                    }
                 } else if (socksRequest instanceof Socks5PasswordAuthRequest) {
-                    ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
-                    ctx.write(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
+                    Socks5PasswordAuthRequest socks5PasswordAuthRequest = (Socks5PasswordAuthRequest) socksRequest;
+                    if (SpyBootstrap.config.auth.equals(socks5PasswordAuthRequest)) {
+                        ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
+                        ctx.write(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
+                    } else {
+                        ctx.write(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.FAILURE))
+                                .addListener(ChannelFutureListener.CLOSE);
+                    }
                 } else if (socksRequest instanceof Socks5CommandRequest) {
                     Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
                     if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
