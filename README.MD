@@ -13,7 +13,7 @@ for happy surfing in internet
 
 ## Config 
 1. ``--port`` config port
-2. ``--remoteHost`` cia remote host
+2. ``--remoteHost`` cia remote host **require**
 3. ``--remotePort`` cia remote port
 4. ``--cryptoName`` example ``aes-128-cfb``
 5. ``--cryptoPassword`` password
