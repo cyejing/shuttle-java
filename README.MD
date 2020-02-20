@@ -2,7 +2,7 @@
 
 for happy surfing in internet
 
-## Start 
+## Setup 
 1. install cia in outer net
 
 2. install spy for socks5 proxy
