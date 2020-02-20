@@ -12,9 +12,9 @@ for happy surfing in internet
 4. enjoy
 
 ## Config 
-1. ``--port`` 配置端口
-2. ``--remoteHost`` 配置cia远程地址
-3. ``--remotePort`` 配置cia远程端口
-4. ``--cryptoName`` 加密算法
-5. ``--cryptoPassword`` 加密密文
-6. ``--auth`` socks5密文
+1. ``--port`` config port
+2. ``--remoteHost`` cia remote host
+3. ``--remotePort`` cia remote port
+4. ``--cryptoName`` example ``aes-128-cfb``
+5. ``--cryptoPassword`` password
+6. ``--auth`` socks5 auth
