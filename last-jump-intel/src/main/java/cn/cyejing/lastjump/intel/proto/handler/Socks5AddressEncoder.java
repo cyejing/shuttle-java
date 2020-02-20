@@ -1,18 +1,3 @@
-/*
- * Copyright 2015 The Netty Project
- *
- * The Netty Project licenses this file to you under the Apache License,
- * version 2.0 (the "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at:
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
 
 package cn.cyejing.lastjump.intel.proto.handler;
 
@@ -23,10 +8,6 @@ import io.netty.handler.codec.EncoderException;
 import io.netty.util.CharsetUtil;
 import io.netty.util.NetUtil;
 
-/**
- * Encodes a SOCKS5 address into binary representation.
- *
- */
 public interface Socks5AddressEncoder {
 
     Socks5AddressEncoder DEFAULT = new Socks5AddressEncoder() {
@@ -59,12 +40,6 @@ public interface Socks5AddressEncoder {
         }
     };
 
-    /**
-     * Encodes a SOCKS5 address.
-     *
-     * @param addrType the type of the address
-     * @param addrValue the string representation of the address
-     * @param out the output buffer where the encoded SOCKS5 address field will be written to
-     */
+
     void encodeAddress(ConnectAddressType addrType, String addrValue, ByteBuf out) throws Exception;
 }

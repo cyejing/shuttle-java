@@ -15,7 +15,6 @@ public class CryptoFactory {
     private static Logger logger = LoggerFactory.getLogger(CryptoFactory.class);
 
     private static Map<String, String> crypts = new HashMap<>();
-    private static Map<String, Crypto> instanceMap = new HashMap<>();
 
     static {
         crypts.putAll(AesCrypto.getCiphers());
@@ -25,10 +24,6 @@ public class CryptoFactory {
     }
 
     public static Crypto get(String name, String password) {
-//        if (instanceMap.containsKey(name + ":" + password)) {
-//            return instanceMap.get(name + ":" + password);
-//        }
-
         String className = crypts.get(name);
         if (className == null) {
             return null;
@@ -39,7 +34,6 @@ public class CryptoFactory {
             Constructor<?> constructor = clazz.getConstructor(String.class,
                     String.class);
             Crypto crypto = (Crypto) constructor.newInstance(name, password);
-//            instanceMap.put(name + ":" + password, crypto);
             return crypto;
         } catch (Exception e) {
             logger.error("get crypt error", e);

@@ -117,8 +117,8 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
 
                         responseFuture.addListener((ChannelFutureListener) channelFuture -> {
                             ctx.pipeline().remove(SocksServerConnectHandler.this);
-                            outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
                             ctx.pipeline().addLast(new RelayHandler(outboundChannel));
+                            outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
                         });
                     } else {
                         ctx.channel().writeAndFlush(

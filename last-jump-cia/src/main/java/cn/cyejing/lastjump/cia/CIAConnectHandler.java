@@ -30,11 +30,13 @@ public class CIAConnectHandler extends SimpleChannelInboundHandler<ConnectReques
                 .connect(request.getRemoteHost(), request.getRemotePort())
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
-                        ctx.channel().writeAndFlush(new ConnectResponse(ConnectType.Connected));
-                        ctx.pipeline().remove(CIAConnectHandler.this);
-                        ctx.pipeline().remove(ConnectRequestDecoder.class);
-                        ctx.pipeline().remove(ConnectResponseEncoder.class);
-                        ctx.pipeline().addLast(new RelayHandler(future.channel()));
+                        ctx.channel().writeAndFlush(new ConnectResponse(ConnectType.Connected)).addListener(future1 -> {
+                            ctx.pipeline().remove(CIAConnectHandler.this);
+                            ctx.pipeline().remove(ConnectRequestDecoder.class);
+                            ctx.pipeline().remove(ConnectResponseEncoder.class);
+                            ctx.pipeline().addLast(new RelayHandler(future.channel()));
+                        });
+
                     } else {
                         log.error("connect remote host:{} fail", request.getRemoteHost());
                         ctx.channel().writeAndFlush(new ConnectResponse(ConnectType.Failed));
