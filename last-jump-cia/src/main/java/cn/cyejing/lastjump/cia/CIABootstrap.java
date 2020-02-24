@@ -1,5 +1,6 @@
 package cn.cyejing.lastjump.cia;
 
+import cn.cyejing.lastjump.intel.proto.encryption.CryptoFactory;
 import cn.cyejing.lastjump.intel.proto.handler.ConnectRequestDecoder;
 import cn.cyejing.lastjump.intel.proto.handler.ConnectResponseEncoder;
 import cn.cyejing.lastjump.intel.proto.handler.CryptoCodec;
@@ -23,9 +24,13 @@ public class CIABootstrap {
     public static void main(String[] args) throws Exception {
         extractArgs(args);
 
+        if (!CryptoFactory.legalName(config.cryptoName)) {
+            throw new IllegalArgumentException(
+                    "unsupported crypto name:" + config.cryptoName + ". now support name is:" + CryptoFactory.supportName());
+        }
+
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
-
         try {
             new ServerBootstrap().group(bossGroup, workGroup)
                     .channel(NioServerSocketChannel.class)

@@ -1,5 +1,6 @@
 package cn.cyejing.lastjump.spy;
 
+import cn.cyejing.lastjump.intel.proto.encryption.CryptoFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
@@ -23,6 +24,10 @@ public class SpyBootstrap {
 
         if (StringUtil.isNullOrEmpty(config.remoteHost)) {
             throw new IllegalArgumentException("remoteHost must config, for args \"--remoteHost=x.x.x.x\"");
+        }
+        if (!CryptoFactory.legalName(config.cryptoName)) {
+            throw new IllegalArgumentException(
+                    "unsupported crypto name:" + config.cryptoName + ". now support name is:" + CryptoFactory.supportName());
         }
 
         EventLoopGroup bossGroup = new NioEventLoopGroup();

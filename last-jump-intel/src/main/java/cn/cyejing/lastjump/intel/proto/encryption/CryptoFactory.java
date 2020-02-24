@@ -5,7 +5,9 @@ import cn.cyejing.lastjump.intel.proto.encryption.impl.BlowFishCrypto;
 import cn.cyejing.lastjump.intel.proto.encryption.impl.CamelliaCrypto;
 import cn.cyejing.lastjump.intel.proto.encryption.impl.SeedCrypto;
 import java.lang.reflect.Constructor;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,5 +42,13 @@ public class CryptoFactory {
         }
 
         return null;
+    }
+
+    public static boolean legalName(String name) {
+        return crypts.containsKey(name);
+    }
+
+    public static Collection<String> supportName() {
+        return crypts.keySet();
     }
 }
