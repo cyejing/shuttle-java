@@ -33,7 +33,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>cn.cyejing.lastjump.cia.CIABootstrap</mainClass>
+                            <mainClass>cn.cyejing.shuttle.center.CIABootstrap</mainClass>
                             <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                     </archive>

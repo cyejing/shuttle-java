@@ -1,11 +1,11 @@
-# Last Jump 
+# Shuttle
 
-for happy surfing in internet
+free shuttle on the internet
 
 ## Setup 
-1. install cia in outer net
+1. install center in outer net
 
-2. install spy for socks5 proxy
+2. install emitter for socks5 proxy
 
 3. config socks5 proxy in browser 
 
