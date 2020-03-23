@@ -9,11 +9,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.Promise;
 
-public final class CIAConnectedHandler extends SimpleChannelInboundHandler<ConnectResponse> {
+public final class CenterConnectedHandler extends SimpleChannelInboundHandler<ConnectResponse> {
 
     private final Promise<Channel> promise;
 
-    public CIAConnectedHandler(Promise<Channel> promise) {
+    public CenterConnectedHandler(Promise<Channel> promise) {
         this.promise = promise;
     }
 

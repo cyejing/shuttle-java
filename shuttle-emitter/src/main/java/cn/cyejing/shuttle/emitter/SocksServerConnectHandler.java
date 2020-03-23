@@ -136,14 +136,14 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                                 new LengthFieldPrepender(4),
                                 new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,
                                         4, 0, 4),
-                                new CryptoCodec(SpyBootstrap.config.cryptoName, SpyBootstrap.config.cryptoPassword),
+                                new CryptoCodec(EmitterBootstrap.config.getCryptoName(), EmitterBootstrap.config.getCryptoPassword()),
                                 new LoggingHandler(LogLevel.DEBUG),
                                 new ConnectRequestEncoder(),
                                 new ConnectResponseDecoder(),
-                                new CIAConnectedHandler(promise));
+                                new CenterConnectedHandler(promise));
                     }
                 })
-                .connect(SpyBootstrap.config.remoteHost, SpyBootstrap.config.remotePort);
+                .connect(EmitterBootstrap.config.getRemoteHost(), EmitterBootstrap.config.getRemotePort());
     }
 
     @Override

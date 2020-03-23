@@ -1,5 +1,7 @@
 package cn.cyejing.shuttle.center;
 
+import cn.cyejing.shuttle.common.BootArgs;
+import cn.cyejing.shuttle.common.CenterArgs;
 import cn.cyejing.shuttle.common.encryption.CryptoFactory;
 import cn.cyejing.shuttle.common.handler.ConnectRequestDecoder;
 import cn.cyejing.shuttle.common.handler.ConnectResponseEncoder;
@@ -18,16 +20,11 @@ import io.netty.handler.logging.LoggingHandler;
 /**
  * @author Born
  */
-public class CIABootstrap {
-    public static final BootArgs config = new BootArgs();
+public class CenterBootstrap {
+    public static final BootArgs config = new CenterArgs();
 
     public static void main(String[] args) throws Exception {
-        extractArgs(args);
-
-        if (!CryptoFactory.legalName(config.cryptoName)) {
-            throw new IllegalArgumentException(
-                    "unsupported crypto name:" + config.cryptoName + ". now support name is:" + CryptoFactory.supportName());
-        }
+        config.initArgs(args);
 
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
@@ -42,15 +39,15 @@ public class CIABootstrap {
                                     new LengthFieldPrepender(4),
                                     new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,
                                             4, 0, 4),
-                                    new CryptoCodec(config.cryptoName, config.cryptoPassword),
+                                    new CryptoCodec(config.getCryptoName(), config.getCryptoPassword()),
                                     new LoggingHandler(LogLevel.DEBUG),
                                     new ConnectRequestDecoder(),
                                     new ConnectResponseEncoder(),
-                                    new CIAConnectHandler());
+                                    new CenterConnectHandler());
 
                         }
                     })
-                    .bind(config.port).sync()
+                    .bind(config.getPort()).sync()
                     .channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
@@ -58,24 +55,5 @@ public class CIABootstrap {
         }
     }
 
-    private static void extractArgs(String[] args) {
-        for (String arg : args) {
-            if (arg.startsWith("--port")) {
-                config.port = Integer.parseInt(arg.substring("--port".length() + 1));
-            }
-            if (arg.startsWith("--cryptoName")) {
-                config.cryptoName = arg.substring("--cryptoName".length() + 1);
-            }
-            if (arg.startsWith("--cryptoPassword")) {
-                config.cryptoPassword = arg.substring("--cryptoPassword".length() + 1);
-            }
-        }
-    }
 
-    public static class BootArgs {
-
-        public int port = 14845;
-        public String cryptoName="aes-128-cfb";
-        public String cryptoPassword="123456";
-    }
 }

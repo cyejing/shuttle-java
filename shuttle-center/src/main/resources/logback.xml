@@ -11,12 +11,12 @@
     <encoder>
       <pattern>${FILE_LOG_PATTERN}</pattern>
     </encoder>
-    <file>cia.log</file>
+    <file>center.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <fileNamePattern>cia.log-%d{yyyy-MM-dd}-%i.gz</fileNamePattern>
       <maxFileSize>500MB</maxFileSize>
       <!-- 保留30天 -->
-      <maxHistory>30</maxHistory>
+      <maxHistory>3</maxHistory>
     </rollingPolicy>
   </appender>
 

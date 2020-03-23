@@ -33,7 +33,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>cn.cyejing.shuttle.emitter.SpyBootstrap</mainClass>
+                            <mainClass>cn.cyejing.shuttle.emitter.EmitterBootstrap</mainClass>
                             <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                     </archive>

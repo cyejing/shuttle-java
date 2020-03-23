@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Born
  */
 @Slf4j
-public class CIAConnectHandler extends SimpleChannelInboundHandler<ConnectRequest> {
+public class CenterConnectHandler extends SimpleChannelInboundHandler<ConnectRequest> {
 
     protected void channelRead0(ChannelHandlerContext context, ConnectRequest request) {
         final ChannelHandlerContext ctx = context;
@@ -31,7 +31,7 @@ public class CIAConnectHandler extends SimpleChannelInboundHandler<ConnectReques
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
                         ctx.channel().writeAndFlush(new ConnectResponse(ConnectType.Connected)).addListener(writeDone -> {
-                            ctx.pipeline().remove(CIAConnectHandler.this);
+                            ctx.pipeline().remove(CenterConnectHandler.this);
                             ctx.pipeline().remove(ConnectRequestDecoder.class);
                             ctx.pipeline().remove(ConnectResponseEncoder.class);
                             ctx.pipeline().addLast(new RelayHandler(future.channel()));

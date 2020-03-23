@@ -44,7 +44,7 @@ public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksM
                 break;
             case SOCKS5:
                 if (socksRequest instanceof Socks5InitialRequest) {
-                    if (StringUtil.isNullOrEmpty(SpyBootstrap.config.auth)) {
+                    if (StringUtil.isNullOrEmpty(EmitterBootstrap.config.getAuth())) {
                         ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
                         ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
                     } else {
@@ -53,7 +53,7 @@ public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksM
                     }
                 } else if (socksRequest instanceof Socks5PasswordAuthRequest) {
                     Socks5PasswordAuthRequest socks5PasswordAuthRequest = (Socks5PasswordAuthRequest) socksRequest;
-                    if (SpyBootstrap.config.auth.equals(socks5PasswordAuthRequest)) {
+                    if (EmitterBootstrap.config.getAuth().equals(socks5PasswordAuthRequest)) {
                         ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
                         ctx.write(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
                     } else {
