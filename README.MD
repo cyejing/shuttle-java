@@ -1,6 +1,6 @@
 # Shuttle
 
-free shuttle on the internet
+Free shuttle on the internet
 
 ## Setup 
 1. install center in outer net
