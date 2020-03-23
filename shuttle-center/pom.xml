@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>last-jump</artifactId>
+        <artifactId>shuttle</artifactId>
         <groupId>cn.cyejing</groupId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>last-jump-spy</artifactId>
+    <artifactId>shuttle-center</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>cn.cyejing</groupId>
-            <artifactId>last-jump-intel</artifactId>
+            <artifactId>shuttle-common</artifactId>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -33,7 +33,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>cn.cyejing.lastjump.spy.SpyBootstrap</mainClass>
+                            <mainClass>cn.cyejing.lastjump.cia.CIABootstrap</mainClass>
                             <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                     </archive>
