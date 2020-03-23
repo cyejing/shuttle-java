@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CIAConnectHandler extends SimpleChannelInboundHandler<ConnectRequest> {
 
-    protected void channelRead0(ChannelHandlerContext context, ConnectRequest request) throws Exception {
+    protected void channelRead0(ChannelHandlerContext context, ConnectRequest request) {
         final ChannelHandlerContext ctx = context;
         new Bootstrap().group(ctx.channel().eventLoop())
                 .channel(NioSocketChannel.class)
@@ -30,7 +30,7 @@ public class CIAConnectHandler extends SimpleChannelInboundHandler<ConnectReques
                 .connect(request.getRemoteHost(), request.getRemotePort())
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
-                        ctx.channel().writeAndFlush(new ConnectResponse(ConnectType.Connected)).addListener(future1 -> {
+                        ctx.channel().writeAndFlush(new ConnectResponse(ConnectType.Connected)).addListener(writeDone -> {
                             ctx.pipeline().remove(CIAConnectHandler.this);
                             ctx.pipeline().remove(ConnectRequestDecoder.class);
                             ctx.pipeline().remove(ConnectResponseEncoder.class);

@@ -37,9 +37,9 @@ import io.netty.util.concurrent.Promise;
 public final class SocksServerConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
     @Override
-    public void channelRead0(final ChannelHandlerContext ctx, final SocksMessage message) throws Exception {
+    public void channelRead0(final ChannelHandlerContext ctx, final SocksMessage message) {
         if (message instanceof Socks4CommandRequest) {
-            socks4CommandExce(ctx, (Socks4CommandRequest) message);
+            socks4CommandExec(ctx, (Socks4CommandRequest) message);
         } else if (message instanceof Socks5CommandRequest) {
             socks5CommandExec(ctx, (Socks5CommandRequest) message);
         } else {
@@ -73,25 +73,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
         });
 
         final Channel inboundChannel = ctx.channel();
-        new Bootstrap().group(inboundChannel.eventLoop())
-                .channel(NioSocketChannel.class)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .handler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(
-                                new LengthFieldPrepender(4),
-                                new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,
-                                        4, 0, 4),
-                                new CryptoCodec(SpyBootstrap.config.cryptoName, SpyBootstrap.config.cryptoPassword),
-                                new LoggingHandler(LogLevel.DEBUG),
-                                new ConnectRequestEncoder(),
-                                new ConnectResponseDecoder(),
-                                new CIAConnectedHandler(promise));
-                    }
-                })
-                .connect(SpyBootstrap.config.remoteHost, SpyBootstrap.config.remotePort)
+        connectCIA(promise, inboundChannel)
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
                         future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
@@ -106,7 +88,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                 });
     }
 
-    private void socks4CommandExce(final ChannelHandlerContext ctx, Socks4CommandRequest message) {
+    private void socks4CommandExec(final ChannelHandlerContext ctx, Socks4CommandRequest message) {
         final Socks4CommandRequest request = message;
         Promise<Channel> promise = ctx.executor().newPromise();
         promise.addListener((FutureListener<Channel>) future -> {
@@ -128,25 +110,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                 });
 
         final Channel inboundChannel = ctx.channel();
-        new Bootstrap().group(inboundChannel.eventLoop())
-                .channel(NioSocketChannel.class)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .handler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(
-                                new LengthFieldPrepender(4),
-                                new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,
-                                        4, 0, 4),
-                                new CryptoCodec(SpyBootstrap.config.cryptoName, SpyBootstrap.config.cryptoPassword),
-                                new LoggingHandler(LogLevel.DEBUG),
-                                new ConnectRequestEncoder(),
-                                new ConnectResponseDecoder(),
-                                new CIAConnectedHandler(promise));
-                    }
-                })
-                .connect(SpyBootstrap.config.remoteHost, SpyBootstrap.config.remotePort)
+        connectCIA(promise, inboundChannel)
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
                         future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
@@ -160,8 +124,30 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                 });
     }
 
+    private ChannelFuture connectCIA(Promise<Channel> promise, Channel inboundChannel) {
+        return new Bootstrap().group(inboundChannel.eventLoop())
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel ch) {
+                        ch.pipeline().addLast(
+                                new LengthFieldPrepender(4),
+                                new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,
+                                        4, 0, 4),
+                                new CryptoCodec(SpyBootstrap.config.cryptoName, SpyBootstrap.config.cryptoPassword),
+                                new LoggingHandler(LogLevel.DEBUG),
+                                new ConnectRequestEncoder(),
+                                new ConnectResponseDecoder(),
+                                new CIAConnectedHandler(promise));
+                    }
+                })
+                .connect(SpyBootstrap.config.remoteHost, SpyBootstrap.config.remotePort);
+    }
+
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         SocksServerUtils.closeOnFlush(ctx.channel());
     }
 }

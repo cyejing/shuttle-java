@@ -22,13 +22,13 @@ public final class CIAConnectedHandler extends SimpleChannelInboundHandler<Conne
         promise.setFailure(throwable);
     }
 
-    protected void channelRead0(ChannelHandlerContext ctx, ConnectResponse msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, ConnectResponse msg) {
         if (ConnectType.Connected.equals(msg.getType())) {
             ctx.pipeline().remove(ConnectRequestEncoder.class);
             ctx.pipeline().remove(ConnectResponseDecoder.class);
             ctx.pipeline().remove(this);
             promise.setSuccess(ctx.channel());
-        }else{
+        } else {
             ctx.close();
         }
     }

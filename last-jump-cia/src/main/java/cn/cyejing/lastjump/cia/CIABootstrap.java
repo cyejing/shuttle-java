@@ -37,7 +37,7 @@ public class CIABootstrap {
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
+                        protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(
                                     new LengthFieldPrepender(4),
                                     new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,
