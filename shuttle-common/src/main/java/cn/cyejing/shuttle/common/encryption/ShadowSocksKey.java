@@ -3,13 +3,14 @@ package cn.cyejing.shuttle.common.encryption;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import javax.crypto.SecretKey;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class ShadowSocksKey implements SecretKey {
 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = LoggerFactory.getLogger(ShadowSocksKey.class);
 	private final static int KEY_LENGTH = 32;
 	private byte[] _key;
 	private int _length;
@@ -36,9 +37,9 @@ public class ShadowSocksKey implements SecretKey {
 			md = MessageDigest.getInstance("MD5");
 			passwordBytes = password.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			logger.error("ShadowSocksKey: Unsupported string encoding", e);
+			log.error("ShadowSocksKey: Unsupported string encoding", e);
 		} catch (Exception e) {
-			logger.error("init error", e);
+			log.error("init error", e);
 			return null;
 		}
 
