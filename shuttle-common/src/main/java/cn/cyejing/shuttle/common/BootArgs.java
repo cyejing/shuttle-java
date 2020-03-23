@@ -2,8 +2,8 @@ package cn.cyejing.shuttle.common;
 
 import cn.cyejing.shuttle.common.encryption.CryptoFactory;
 import io.netty.util.internal.StringUtil;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import lombok.Data;
 
 /**
@@ -18,56 +18,49 @@ public abstract class BootArgs {
     protected String cryptoName="aes-128-cfb";
     protected String cryptoPassword="123456";
 
+    protected Map<String, String> programArgs = new HashMap<>();
 
     public void initArgs(String[] args) {
-        String port = getSystemArgs("port");
+
+        for (String arg : args) {
+            if (arg.startsWith("--")) {
+                programArgs.put(arg.substring(2, arg.lastIndexOf('=')), arg.substring(arg.lastIndexOf('=') + 1));
+            }
+        }
+
+        String port = extractArgs("port");
         if (!StringUtil.isNullOrEmpty(port)) {
             setPort(Integer.parseInt(port));
         }
-        String remoteHost = getSystemArgs("remoteHost");
+        String remoteHost = extractArgs("remoteHost");
         if (!StringUtil.isNullOrEmpty(remoteHost)) {
             this.remoteHost = remoteHost;
         }
-        String remotePort = getSystemArgs("remotePort");
+        String remotePort = extractArgs("remotePort");
         if (!StringUtil.isNullOrEmpty(remotePort)) {
             this.remotePort = Integer.parseInt(remotePort);
         }
-        String cryptoName = getSystemArgs("cryptoName");
+        String cryptoName = extractArgs("cryptoName");
         if (!StringUtil.isNullOrEmpty(cryptoName)) {
             this.cryptoName = cryptoName;
         }
-        String cryptoPassword = getSystemArgs("cryptoPassword");
+        String cryptoPassword = extractArgs("cryptoPassword");
         if (!StringUtil.isNullOrEmpty(cryptoPassword)) {
             this.cryptoPassword = cryptoPassword;
         }
-
-        for (String arg : args) {
-            if (arg.startsWith("--port")) {
-                setPort(Integer.parseInt(arg.substring("--port".length() + 1)));
-            }
-            if (arg.startsWith("--auth")) {
-                this.auth = arg.substring("--auth".length() + 1);
-            }
-            if (arg.startsWith("--remoteHost")) {
-                this.remoteHost = arg.substring("--remoteHost".length() + 1);
-            }
-            if (arg.startsWith("--remotePort")) {
-                this.remotePort = Integer.parseInt(arg.substring("--remotePort".length() + 1));
-            }
-            if (arg.startsWith("--cryptoName")) {
-                this.cryptoName = arg.substring("--cryptoName".length() + 1);
-            }
-            if (arg.startsWith("--cryptoPassword")) {
-                this.cryptoPassword = arg.substring("--cryptoPassword".length() + 1);
-            }
+        String auth = extractArgs("auth");
+        if (!StringUtil.isNullOrEmpty(auth)) {
+            this.auth = auth;
         }
-
 
         verify();
     }
 
-    private String getSystemArgs(String key) {
-        String val = System.getProperty(key);
+    private String extractArgs(String key) {
+        String val = programArgs.get(key);
+        if (StringUtil.isNullOrEmpty(val)) {
+            val = System.getProperty(key);
+        }
         if (StringUtil.isNullOrEmpty(val)) {
             val = System.getenv("SHUTTLE_" + key);
         }
