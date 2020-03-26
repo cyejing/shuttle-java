@@ -77,7 +77,7 @@ public abstract class BootArgs {
             throw new IllegalArgumentException(
                     "unsupported crypto name:" + this.cryptoName + ". now support name is:" + CryptoFactory.supportName());
         }
-        return true;
+        return verify0();
     }
 
 
