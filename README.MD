@@ -13,8 +13,8 @@ Free shuttle on the internet
 
 ## Config 
 1. ``--port`` config port
-2. ``--remoteHost`` cia remote host **require**
-3. ``--remotePort`` cia remote port
+2. ``--remoteHost`` center remote host **require**
+3. ``--remotePort`` center remote port
 4. ``--cryptoName`` example ``aes-128-cfb``
 5. ``--cryptoPassword`` password
 6. ``--auth`` socks5 auth
