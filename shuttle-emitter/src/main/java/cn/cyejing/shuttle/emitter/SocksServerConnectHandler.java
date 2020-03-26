@@ -73,7 +73,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
         });
 
         final Channel inboundChannel = ctx.channel();
-        connectCIA(promise, inboundChannel)
+        connectCenter(promise, inboundChannel)
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
                         future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
@@ -110,7 +110,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                 });
 
         final Channel inboundChannel = ctx.channel();
-        connectCIA(promise, inboundChannel)
+        connectCenter(promise, inboundChannel)
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
                         future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
@@ -124,7 +124,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                 });
     }
 
-    private ChannelFuture connectCIA(Promise<Channel> promise, Channel inboundChannel) {
+    private ChannelFuture connectCenter(Promise<Channel> promise, Channel inboundChannel) {
         return new Bootstrap().group(inboundChannel.eventLoop())
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)

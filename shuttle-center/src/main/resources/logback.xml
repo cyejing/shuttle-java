@@ -13,7 +13,7 @@
     </encoder>
     <file>center.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>cia.log-%d{yyyy-MM-dd}-%i.gz</fileNamePattern>
+      <fileNamePattern>center.log-%d{yyyy-MM-dd}-%i.gz</fileNamePattern>
       <maxFileSize>500MB</maxFileSize>
       <!-- 保留30天 -->
       <maxHistory>3</maxHistory>

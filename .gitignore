@@ -22,4 +22,5 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-/spy.log
+/emitter.log
+/center.log
