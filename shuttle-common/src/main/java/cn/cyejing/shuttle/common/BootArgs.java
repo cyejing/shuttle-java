@@ -2,16 +2,16 @@ package cn.cyejing.shuttle.common;
 
 import cn.cyejing.shuttle.common.encryption.CryptoFactory;
 import io.netty.util.internal.StringUtil;
+import lombok.Data;
+
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Data;
 
 /**
  * @author Born
  */
 @Data
 public abstract class BootArgs {
-    protected int port = -1;
     protected String auth;
     protected String remoteHost;
     protected int remotePort = 14845;
@@ -56,6 +56,7 @@ public abstract class BootArgs {
         verify();
     }
 
+
     private String extractArgs(String key) {
         String val = programArgs.get(key);
         if (StringUtil.isNullOrEmpty(val)) {
@@ -67,7 +68,7 @@ public abstract class BootArgs {
         return val;
     }
 
-    protected boolean verify(){
+    protected boolean verify() {
         if (getPort() < 1024) {
             throw new IllegalArgumentException(
                     "Illegal port:" + getPort());
@@ -79,4 +80,10 @@ public abstract class BootArgs {
         return true;
     }
 
+
+    public abstract void setPort(int port);
+
+    public abstract int getPort();
+
+    protected abstract boolean verify0();
 }

@@ -1,19 +1,20 @@
 package cn.cyejing.shuttle.common;
 
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Born
  */
-@Data
 public class CenterArgs extends BootArgs {
 
+    @Getter
+    @Setter
     protected int port = 14845;
 
     @Override
-    protected boolean verify() {
-        super.verify();
+    protected boolean verify0() {
         return true;
     }
 
