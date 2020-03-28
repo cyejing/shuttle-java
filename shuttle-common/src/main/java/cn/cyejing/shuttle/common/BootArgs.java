@@ -15,7 +15,7 @@ public abstract class BootArgs {
     protected String auth;
     protected String remoteHost;
     protected int remotePort = 14845;
-    protected String cryptoName="aes-128-cfb";
+    protected String cryptoName="aes";
     protected String cryptoPassword="123456";
 
     protected Map<String, String> programArgs = new HashMap<>();

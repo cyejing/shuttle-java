@@ -5,10 +5,12 @@ import cn.cyejing.shuttle.common.model.ConnectRequest.ConnectAddressType;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Born
  */
+@Slf4j
 public class ConnectRequestEncoder extends MessageToByteEncoder<ConnectRequest> {
     private Socks5AddressEncoder addressEncoder = Socks5AddressEncoder.DEFAULT;
 
@@ -21,4 +23,6 @@ public class ConnectRequestEncoder extends MessageToByteEncoder<ConnectRequest> 
         addressEncoder.encodeAddress(type, msg.getRemoteHost(), out);
         out.writeShort(msg.getRemotePort());
     }
+
+
 }

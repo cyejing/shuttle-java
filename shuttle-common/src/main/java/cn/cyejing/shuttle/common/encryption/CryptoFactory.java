@@ -1,15 +1,13 @@
 package cn.cyejing.shuttle.common.encryption;
 
 import cn.cyejing.shuttle.common.encryption.impl.AesCrypto;
-import cn.cyejing.shuttle.common.encryption.impl.BlowFishCrypto;
-import cn.cyejing.shuttle.common.encryption.impl.CamelliaCrypto;
-import cn.cyejing.shuttle.common.encryption.impl.SeedCrypto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CryptoFactory {
 
@@ -19,9 +17,6 @@ public class CryptoFactory {
 
     static {
         crypts.putAll(AesCrypto.getCiphers());
-        crypts.putAll(CamelliaCrypto.getCiphers());
-        crypts.putAll(BlowFishCrypto.getCiphers());
-        crypts.putAll(SeedCrypto.getCiphers());
     }
 
     public static Crypto get(String name, String password) {

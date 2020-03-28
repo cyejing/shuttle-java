@@ -76,9 +76,9 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
         connectCenter(promise, inboundChannel)
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
-                        future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
-                                ConnectAddressType.valueOf(request.dstAddrType()),
-                                request.dstAddr(), request.dstPort()));
+                            future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
+                                    ConnectAddressType.valueOf(request.dstAddrType()),
+                                    request.dstAddr(), request.dstPort()));
                     } else {
                         ctx.channel().writeAndFlush(
                                 new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE,
@@ -136,8 +136,8 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                                 new LengthFieldPrepender(4),
                                 new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,
                                         4, 0, 4),
-                                new CryptoCodec(EmitterBootstrap.config.getCryptoName(), EmitterBootstrap.config.getCryptoPassword()),
                                 new LoggingHandler(LogLevel.DEBUG),
+                                new CryptoCodec(EmitterBootstrap.config.getCryptoName(), EmitterBootstrap.config.getCryptoPassword()),
                                 new ConnectRequestEncoder(),
                                 new ConnectResponseDecoder(),
                                 new CenterConnectedHandler(promise));

@@ -15,6 +15,6 @@ Free shuttle on the internet
 1. ``--port`` config port
 2. ``--remoteHost`` center remote host **require**
 3. ``--remotePort`` center remote port
-4. ``--cryptoName`` example ``aes-128-cfb``
+4. ``--cryptoName`` example ``aes``
 5. ``--cryptoPassword`` password
 6. ``--auth`` socks5 auth

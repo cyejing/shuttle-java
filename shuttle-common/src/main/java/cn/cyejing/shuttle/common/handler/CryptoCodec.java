@@ -5,12 +5,15 @@ import cn.cyejing.shuttle.common.encryption.CryptoFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
  * @author Born
  */
+@Slf4j
 public class CryptoCodec extends ByteToMessageCodec<ByteBuf> {
 
     private final Crypto crypto;
@@ -20,22 +23,18 @@ public class CryptoCodec extends ByteToMessageCodec<ByteBuf> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out)  {
         byte[] bytes = new byte[msg.readableBytes()];
         msg.readBytes(bytes);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        crypto.encrypt(bytes, outputStream);
-        out.writeBytes(outputStream.toByteArray());
+        out.writeBytes(crypto.encrypt(bytes));
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out)  {
         byte[] bytes = new byte[in.readableBytes()];
         in.readBytes(bytes);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        crypto.decrypt(bytes, outputStream);
         ByteBuf outBuf = ctx.alloc().buffer();
-        outBuf.writeBytes(outputStream.toByteArray());
+        outBuf.writeBytes(crypto.decrypt(bytes));
         out.add(outBuf);
     }
 
