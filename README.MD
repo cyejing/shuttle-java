@@ -1,13 +1,17 @@
 # Shuttle
 
 Free shuttle on the internet
+自由窜梭冲浪，你懂的。
 
 ## Setup 
 1. install center in outer net
+安装center服务在另一个网络
 
 2. install emitter for socks5 proxy
+安装emitter在自己的网络
 
 3. config socks5 proxy in browser 
+浏览器设置代理到emitter
 
 4. enjoy
 
