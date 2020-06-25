@@ -4,6 +4,9 @@
  */
 package cn.cyejing.shuttle;
 
+import cn.cyejing.shuttle.common.Config;
+import cn.cyejing.shuttle.netty.ServerContainer;
+
 /**
  * <B>主类名称：</B><BR>
  * <B>概要说明：</B><BR>
@@ -12,7 +15,10 @@ package cn.cyejing.shuttle;
  * @since 2020年06月22日 5:31 下午
  */
 public class Bootstrap {
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
+        Config shuttleConfig = new Config();
+        ServerContainer shuttleContainer = new ServerContainer(shuttleConfig);
+        shuttleContainer.bind(14843);
+        shuttleContainer.bind(14844);
     }
 }
