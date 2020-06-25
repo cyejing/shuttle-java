@@ -66,17 +66,12 @@ public class SocksContainer {
         this.serverBootstrap = new ServerBootstrap()
                 .group(bossGroup, workGroup)
                 .channel(NioServerSocketChannel.class)
-                .option(ChannelOption.SO_BACKLOG, 1024)                //	sync + accept = backlog
-                .option(ChannelOption.SO_REUSEADDR, true)              //	允许重复使用本地地址和端口
-                .option(ChannelOption.SO_KEEPALIVE, false)             //	如果在两小时内没有数据的通信时, TCP会自动发送一个活动探测数据报文
-                .childOption(ChannelOption.TCP_NODELAY, true)          //	该参数的作用就是禁止使用Nagle算法，使用于小数据即时传输
-                .childOption(ChannelOption.SO_SNDBUF, 65535)           //	设置发送数据的缓冲区大小
-                .childOption(ChannelOption.SO_RCVBUF, 65535)           //	设置接受数据的缓冲区大小
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel sc) throws Exception {
                         sc.pipeline().addLast(
+                                new LoggingHandler(LogLevel.INFO),
                                 new SocksPortUnificationServerHandler(),
                                 new SocksServerHandler()
                         );
@@ -100,10 +95,10 @@ public class SocksContainer {
                         //ctx.pipeline().addFirst(new Socks5PasswordAuthRequestDecoder());
                         //ctx.write(new DefaultSocks5AuthMethodResponse(Socks5AuthMethod.PASSWORD));
                         ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
-                        ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
+                        ctx.writeAndFlush(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
                     } else if (socksRequest instanceof Socks5PasswordAuthRequest) {
                         ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
-                        ctx.write(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
+                        ctx.writeAndFlush(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
                     } else if (socksRequest instanceof Socks5CommandRequest) {
                         Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
                         if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
@@ -131,52 +126,42 @@ public class SocksContainer {
         protected void channelRead0(ChannelHandlerContext ctx, SocksMessage message) throws Exception {
             if (message instanceof Socks5CommandRequest) {
                 final Socks5CommandRequest request = (Socks5CommandRequest) message;
-                Promise<Channel> promise = ctx.executor().newPromise();
-                promise.addListener(
-                        new FutureListener<Channel>() {
-                            @Override
-                            public void operationComplete(final Future<Channel> future) throws Exception {
-                                final Channel outboundChannel = future.getNow();
-                                if (future.isSuccess()) {
-                                    ChannelFuture responseFuture =
-                                            ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse(
-                                                    Socks5CommandStatus.SUCCESS,
-                                                    request.dstAddrType(),
-                                                    request.dstAddr(),
-                                                    request.dstPort()));
-
-                                    responseFuture.addListener(new ChannelFutureListener() {
-                                        @Override
-                                        public void operationComplete(ChannelFuture channelFuture) {
-                                            ctx.pipeline().remove(SocksServerConnectHandler.this);
-                                            outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
-                                            ctx.pipeline().addLast(new RelayHandler(outboundChannel));
-                                        }
-                                    });
-                                } else {
-                                    ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse(
-                                            Socks5CommandStatus.FAILURE, request.dstAddrType()));
-                                    SocksServerUtils.closeOnFlush(ctx.channel());
-                                }
-                            }
-                        });
-
                 final Channel inboundChannel = ctx.channel();
                 b.group(inboundChannel.eventLoop())
                         .channel(NioSocketChannel.class)
                         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
                         .option(ChannelOption.SO_KEEPALIVE, true)
-                        .handler(new DirectClientHandler(promise));
+                        .handler(new LoggingHandler(LogLevel.INFO));
 
                 b.connect(request.dstAddr(), request.dstPort()).addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
                         if (future.isSuccess()) {
+                            final Channel outboundChannel = future.channel();
+
+                            ChannelFuture responseFuture =
+                                    inboundChannel.writeAndFlush(new DefaultSocks5CommandResponse(
+                                            Socks5CommandStatus.SUCCESS,
+                                            request.dstAddrType(),
+                                            request.dstAddr(),
+                                            request.dstPort()));
+
+                            responseFuture.addListener(new ChannelFutureListener() {
+                                @Override
+                                public void operationComplete(ChannelFuture channelFuture) {
+                                    ctx.pipeline().remove(SocksServerConnectHandler.this);
+                                    System.out.println("connect");
+                                    outboundChannel.pipeline().addLast(new RelayHandler(inboundChannel));
+                                    ctx.pipeline().addLast(new RelayHandler(outboundChannel));
+                                }
+                            });
+
                             // Connection established use handler provided results
                         } else {
                             // Close the connection if the connection attempt has failed.
                             ctx.channel().writeAndFlush(
                                     new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE, request.dstAddrType()));
+
                             SocksServerUtils.closeOnFlush(ctx.channel());
                         }
                     }
