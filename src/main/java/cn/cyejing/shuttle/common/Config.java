@@ -19,7 +19,7 @@ public class Config {
 
     private int maxContentLength = 32 * 1024 * 1024;
 
-    private String certificateFile = "3923871_app.hengyingspace.com.pem";
-    private String keyFile = "3923871_app.hengyingspace.com.key";
+    private String certificateFile = "test.pem";
+    private String keyFile = "test.key";
 
 }

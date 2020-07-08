@@ -1,7 +1,7 @@
 server:
   port: 14843
-  cert: 3923871_app.hengyingspace.com.pem
-  key: 3923871_app.hengyingspace.com.key
+  cert: test.pem
+  key: test.key
 
 register:
   - serverAddress: localhost:14843
