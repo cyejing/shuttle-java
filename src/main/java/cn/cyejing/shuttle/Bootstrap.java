@@ -21,8 +21,8 @@ public class Bootstrap {
         Config config = new Config();
         ServerContainer shuttleContainer = new ServerContainer(config);
         shuttleContainer.bind(14843);
-        SocksContainer socksContainer = new SocksContainer(config);
-        socksContainer.bind(4843);
+//        SocksContainer socksContainer = new SocksContainer(config);
+//        socksContainer.bind(4843);
 
     }
 }
