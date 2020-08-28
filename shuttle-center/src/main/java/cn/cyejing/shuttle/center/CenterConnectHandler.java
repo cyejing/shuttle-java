@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CenterConnectHandler extends SimpleChannelInboundHandler<ConnectRequest> {
 
     protected void channelRead0(ChannelHandlerContext context, ConnectRequest request) {
+        log.info("requested connection to {}", request.getRemoteHost(), request.getRemotePort());
         final ChannelHandlerContext ctx = context;
         new Bootstrap().group(ctx.channel().eventLoop())
                 .channel(NioSocketChannel.class)
@@ -38,7 +39,7 @@ public class CenterConnectHandler extends SimpleChannelInboundHandler<ConnectReq
                         });
 
                     } else {
-                        log.error("connect remote host:{} fail", request.getRemoteHost());
+                        log.error("failed connect remote host {}:{}", request.getRemoteHost(), request.getRemotePort());
                         ctx.channel().writeAndFlush(new ConnectResponse(ConnectType.Failed));
                         ctx.close();
                     }

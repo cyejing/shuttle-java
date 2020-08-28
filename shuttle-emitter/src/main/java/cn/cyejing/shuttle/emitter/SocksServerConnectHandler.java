@@ -32,8 +32,10 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.FutureListener;
 import io.netty.util.concurrent.Promise;
+import lombok.extern.slf4j.Slf4j;
 
 @ChannelHandler.Sharable
+@Slf4j
 public final class SocksServerConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
     @Override
@@ -76,7 +78,8 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
         connectCenter(promise, inboundChannel)
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
-                            future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
+                        log.info("{} requested connection to {}:{}", future.channel().localAddress(), request.dstAddr(), request.dstPort());
+                        future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
                                     ConnectAddressType.valueOf(request.dstAddrType()),
                                     request.dstAddr(), request.dstPort()));
                     } else {
@@ -113,6 +116,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
         connectCenter(promise, inboundChannel)
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
+                        log.info("{} requested connection to {}:{}", future.channel().localAddress(), request.dstAddr(), request.dstPort());
                         future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
                                 ConnectAddressType.IPv4, request.dstAddr(), request.dstPort()));
                     } else {
