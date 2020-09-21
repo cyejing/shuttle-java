@@ -13,6 +13,7 @@
         <dependency>
             <groupId>cn.cyejing</groupId>
             <artifactId>shuttle-common</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
