@@ -19,12 +19,12 @@ public class AesCrypto extends CryptoBase {
         return ciphers;
     }
 
-    private byte[] passwordBytes = new byte[16];
+    private final byte[] passwordBytes = new byte[16];
 
     public AesCrypto(String name, String password) {
         super(name, password);
         int length = password.getBytes().length;
-        System.arraycopy(passwordBytes, 0, password.getBytes(), 0, length > 16 ? 16 : length);
+        System.arraycopy(passwordBytes, 0, password.getBytes(), 0, Math.min(length, 16));
     }
 
     @Override

@@ -2,7 +2,6 @@ package cn.cyejing.shuttle.center;
 
 import cn.cyejing.shuttle.common.BootArgs;
 import cn.cyejing.shuttle.common.CenterArgs;
-import cn.cyejing.shuttle.common.encryption.CryptoFactory;
 import cn.cyejing.shuttle.common.handler.ConnectRequestDecoder;
 import cn.cyejing.shuttle.common.handler.ConnectResponseEncoder;
 import cn.cyejing.shuttle.common.handler.CryptoCodec;

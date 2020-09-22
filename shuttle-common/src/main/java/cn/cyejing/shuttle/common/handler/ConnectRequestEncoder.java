@@ -12,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ConnectRequestEncoder extends MessageToByteEncoder<ConnectRequest> {
-    private Socks5AddressEncoder addressEncoder = Socks5AddressEncoder.DEFAULT;
+    private final Socks5AddressEncoder addressEncoder = Socks5AddressEncoder.DEFAULT;
 
-    protected void encode(ChannelHandlerContext ctx, ConnectRequest msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ConnectRequest msg, ByteBuf out) {
         out.writeByte(msg.getVersion().byteValue());
         out.writeByte(msg.getType().byteValue());
         out.writeByte(0x00);

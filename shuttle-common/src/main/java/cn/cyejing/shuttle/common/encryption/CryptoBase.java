@@ -2,8 +2,6 @@ package cn.cyejing.shuttle.common.encryption;
 
 import lombok.Getter;
 
-import java.io.ByteArrayOutputStream;
-
 public abstract class CryptoBase implements Crypto {
 
 	@Getter

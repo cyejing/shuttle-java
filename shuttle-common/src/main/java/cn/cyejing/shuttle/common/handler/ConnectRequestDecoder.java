@@ -8,15 +8,16 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.DecoderException;
+
 import java.util.List;
 
 /**
  * @author Born
  */
 public class ConnectRequestDecoder extends ByteToMessageDecoder {
-    private Socks5AddressDecoder addressDecoder = Socks5AddressDecoder.DEFAULT;
+    private final Socks5AddressDecoder addressDecoder = Socks5AddressDecoder.DEFAULT;
 
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         byte version = in.readByte();
         if (version != Version.V1.byteValue()) {
             throw new DecoderException(

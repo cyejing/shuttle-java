@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class CryptoFactory {
 
-    private static Logger logger = LoggerFactory.getLogger(CryptoFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(CryptoFactory.class);
 
-    private static Map<String, String> crypts = new HashMap<>();
+    private static final Map<String, String> crypts = new HashMap<>();
 
     static {
         crypts.putAll(AesCrypto.getCiphers());
@@ -29,8 +29,7 @@ public class CryptoFactory {
             Class<?> clazz = Class.forName(className);
             Constructor<?> constructor = clazz.getConstructor(String.class,
                     String.class);
-            Crypto crypto = (Crypto) constructor.newInstance(name, password);
-            return crypto;
+            return (Crypto) constructor.newInstance(name, password);
         } catch (Exception e) {
             logger.error("get crypt error", e);
         }

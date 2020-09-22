@@ -14,8 +14,7 @@ public class CenterArgs extends BootArgs {
     protected int port = 14845;
 
     @Override
-    protected boolean verify0() {
-        return true;
+    protected void verify0() {
     }
 
 

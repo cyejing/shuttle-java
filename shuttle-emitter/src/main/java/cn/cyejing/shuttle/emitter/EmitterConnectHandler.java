@@ -1,6 +1,5 @@
 package cn.cyejing.shuttle.emitter;
 
-import cn.cyejing.shuttle.common.utils.SocksServerUtils;
 import cn.cyejing.shuttle.common.handler.ConnectRequestEncoder;
 import cn.cyejing.shuttle.common.handler.ConnectResponseDecoder;
 import cn.cyejing.shuttle.common.handler.CryptoCodec;
@@ -8,15 +7,9 @@ import cn.cyejing.shuttle.common.handler.RelayHandler;
 import cn.cyejing.shuttle.common.model.ConnectRequest;
 import cn.cyejing.shuttle.common.model.ConnectRequest.ConnectAddressType;
 import cn.cyejing.shuttle.common.model.ConnectRequest.ConnectType;
+import cn.cyejing.shuttle.common.utils.SocksServerUtils;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;

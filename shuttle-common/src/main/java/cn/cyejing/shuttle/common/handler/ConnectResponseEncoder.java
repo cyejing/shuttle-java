@@ -10,7 +10,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
  */
 public class ConnectResponseEncoder extends MessageToByteEncoder<ConnectResponse> {
 
-    protected void encode(ChannelHandlerContext ctx, ConnectResponse msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ConnectResponse msg, ByteBuf out) {
         out.writeByte(msg.getVersion().byteValue());
         out.writeByte(msg.getType().byteValue());
         out.writeByte(0x00);
