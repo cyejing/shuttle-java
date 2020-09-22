@@ -33,6 +33,7 @@ public class EmitterBootstrap {
             ChannelFuture channelFuture = new ServerBootstrap().group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(
                                     new SocksPortUnificationServerHandler(),

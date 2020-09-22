@@ -39,9 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author cyejing
  */
-@ChannelHandler.Sharable
 @Slf4j
-public final class SocksServerConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
+public final class EmitterConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, final SocksMessage message) {
@@ -66,10 +65,9 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                                 request.dstAddrType(),
                                 request.dstAddr(),
                                 request.dstPort()));
-                log.info("write success to" + ctx.channel());
                 responseFuture.addListener(f -> {
                     if (ctx.channel().isActive()) {
-                        ctx.pipeline().remove(SocksServerConnectHandler.this);
+                        ctx.pipeline().remove(EmitterConnectHandler.this);
                         outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
                         ctx.pipeline().addLast(new RelayHandler(outboundChannel));
                     }else{
@@ -87,7 +85,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
         connectCenter(promise, inboundChannel)
                 .addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
-                        log.info("{} requested connection to {}:{}", future.channel().localAddress(), request.dstAddr(), request.dstPort());
+                        log.info("requested connection to {}:{}",  request.dstAddr(), request.dstPort());
                         future.channel().writeAndFlush(new ConnectRequest(ConnectType.Connect,
                                     ConnectAddressType.valueOf(request.dstAddrType()),
                                     request.dstAddr(), request.dstPort()));
@@ -110,7 +108,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                                 new DefaultSocks4CommandResponse(Socks4CommandStatus.SUCCESS));
 
                         responseFuture.addListener((ChannelFutureListener) channelFuture -> {
-                            ctx.pipeline().remove(SocksServerConnectHandler.this);
+                            ctx.pipeline().remove(EmitterConnectHandler.this);
                             ctx.pipeline().addLast(new RelayHandler(outboundChannel));
                             outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
                         });
