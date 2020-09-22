@@ -68,7 +68,7 @@ public abstract class BootArgs {
         return val;
     }
 
-    protected boolean verify() {
+    protected void verify() {
         if (getPort() < 1024) {
             throw new IllegalArgumentException(
                     "Illegal port:" + getPort());
@@ -77,13 +77,24 @@ public abstract class BootArgs {
             throw new IllegalArgumentException(
                     "unsupported crypto name:" + this.cryptoName + ". now support name is:" + CryptoFactory.supportName());
         }
-        return verify0();
+        verify0();
     }
 
 
+    /**
+     * port
+     * @param port port
+     */
     public abstract void setPort(int port);
 
+    /**
+     * port
+     * @return port
+     */
     public abstract int getPort();
 
-    protected abstract boolean verify0();
+    /**
+     * verify
+     */
+    protected abstract void verify0();
 }

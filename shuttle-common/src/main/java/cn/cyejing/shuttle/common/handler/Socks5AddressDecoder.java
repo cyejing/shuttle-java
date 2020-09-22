@@ -14,7 +14,7 @@ public interface Socks5AddressDecoder {
 
         private static final int IPv6_LEN = 16;
 
-        public String decodeAddress(ConnectAddressType addrType, ByteBuf in) throws Exception {
+        public String decodeAddress(ConnectAddressType addrType, ByteBuf in) {
             if (addrType == ConnectAddressType.IPv4) {
                 return NetUtil.intToIpAddress(in.readInt());
             }
@@ -40,5 +40,5 @@ public interface Socks5AddressDecoder {
         }
     };
 
-    String decodeAddress(ConnectAddressType addrType, ByteBuf in) throws Exception;
+    String decodeAddress(ConnectAddressType addrType, ByteBuf in);
 }

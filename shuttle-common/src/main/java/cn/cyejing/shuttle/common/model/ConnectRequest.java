@@ -27,7 +27,8 @@ public class ConnectRequest {
     }
 
     public enum Version {
-        V1((byte) 0x01);
+        V1((byte) 0x01),
+        V2((byte) 0x02);
 
         private final byte b;
 

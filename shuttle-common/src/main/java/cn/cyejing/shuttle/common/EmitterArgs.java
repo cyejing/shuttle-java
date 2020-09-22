@@ -14,10 +14,9 @@ public class EmitterArgs extends BootArgs {
      protected int port = 14843;
 
     @Override
-    protected boolean verify0() {
+    protected void verify0() {
         if (StringUtil.isNullOrEmpty(this.remoteHost)) {
             throw new IllegalArgumentException("remoteHost must config, for args \"--remoteHost=x.x.x.x\"");
         }
-        return true;
     }
 }
