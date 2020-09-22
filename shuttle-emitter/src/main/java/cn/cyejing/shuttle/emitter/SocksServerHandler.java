@@ -21,6 +21,9 @@ import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthStatus;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author cyejing
+ */
 @ChannelHandler.Sharable
 @Slf4j
 public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksMessage> {
@@ -86,7 +89,6 @@ public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksM
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-        log.error("some exception", throwable);
         SocksServerUtils.closeOnFlush(ctx.channel());
     }
 }

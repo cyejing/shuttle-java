@@ -30,10 +30,15 @@ import io.netty.handler.codec.socksx.v5.Socks5CommandRequest;
 import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
+import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author cyejing
+ */
 @ChannelHandler.Sharable
 @Slf4j
 public final class SocksServerConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
@@ -52,7 +57,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
     private void socks5CommandExec(final ChannelHandlerContext ctx, Socks5CommandRequest message) {
         final Socks5CommandRequest request = message;
         final Promise<Channel> promise = ctx.executor().newPromise();
-        promise.addListener((FutureListener<Channel>) future -> {
+        promise.addListener((GenericFutureListener<Future<Channel>>) future -> {
             final Channel outboundChannel = future.getNow();
             if (future.isSuccess()) {
                 ChannelFuture responseFuture =
@@ -61,11 +66,15 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                                 request.dstAddrType(),
                                 request.dstAddr(),
                                 request.dstPort()));
-
-                responseFuture.addListener((ChannelFutureListener) channelFuture -> {
-                    ctx.pipeline().remove(SocksServerConnectHandler.this);
-                    outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
-                    ctx.pipeline().addLast(new RelayHandler(outboundChannel));
+                log.info("write success to" + ctx.channel());
+                responseFuture.addListener(f -> {
+                    if (ctx.channel().isActive()) {
+                        ctx.pipeline().remove(SocksServerConnectHandler.this);
+                        outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
+                        ctx.pipeline().addLast(new RelayHandler(outboundChannel));
+                    }else{
+                        log.error("asdas");
+                    }
                 });
             } else {
                 ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse(
